@@ -89,6 +89,9 @@ public class AFloat {
                     continue;
                 }
             }
+            if(this.decimals.size() = num.decimals.size()){
+                return 0;
+            }
         }
     }
 }
