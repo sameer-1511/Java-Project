@@ -92,6 +92,9 @@ public class AFloat {
             if(this.decimals.size() = num.decimals.size()){
                 return 0;
             }
+            else{
+                return 58;
+            }
         }
     }
 }
