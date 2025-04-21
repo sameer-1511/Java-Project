@@ -58,12 +58,12 @@ public class AFloat {
         return answer;
     }
 
-    public int compare_nums(AInteger num){
+    public int compare_nums(AFloat num){
         if(this.intnums.size() > num.intnums.size()){
             return 1;
         }
         else if(this.intnums.size() < num.intnums.size()){
-            return -1
+            return -1;
         }
         else{
             for(int i = 0; i< this.intnums.size(); i++){
@@ -78,6 +78,7 @@ public class AFloat {
                 }
             }
             AFloat smaller = (this.decimals.size() < num.decimals.size())? this : num;
+            AFloat larger = (this.decimals.size() > num.decimals.size())? this : num;
             for(int i = 0; i< smaller.decimals.size(); i++){
                 if(this.decimals.get(i) > num.decimals.get(i)){
                     return 1;
@@ -89,7 +90,11 @@ public class AFloat {
                     continue;
                 }
             }
-            if()
+            if(this.decimals.size() == num.decimals.size()){
+                return 0;
+            }
         }
     }
+
+    
 }
