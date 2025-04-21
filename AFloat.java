@@ -89,7 +89,6 @@ public class AFloat {
                     continue;
                 }
             }
-            if()
         }
     }
 }
