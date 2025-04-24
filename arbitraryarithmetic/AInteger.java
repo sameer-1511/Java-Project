@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class AInteger {
-    private ArrayList<Integer> digits;
-    private boolean isPositive;
+    public ArrayList<Integer> digits;
+    public boolean isPositive;
 
     public AInteger() {
         this.digits = new ArrayList<>();

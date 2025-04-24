@@ -1,7 +1,7 @@
 package arbitraryarithmetic;
 
 import java.util.ArrayList;
-//import java.util.Scanner;
+import java.util.Scanner;
 
 public class AFloat {
     private ArrayList<Integer> intnums;
@@ -31,7 +31,7 @@ public class AFloat {
             this.intnums.add(s.charAt(i) - '0');
             i++;
         }
-        s.replaceAll("0+$", "");
+        s = s.replaceAll("0+$", "");
         for(int j = this.intnums.size(); j < s.length(); j++){
             this.decimals.add(s.charAt(j) - '0');
         }
@@ -43,8 +43,12 @@ public class AFloat {
         this.isPositive = Othernum.isPositive;
     }
 
-    public String toString(AFloat Num){
+    public String toString(){
         String answer = "";
+
+        //if(this.isPositive == false){
+        //    answer = answer + '-';
+        //}
 
         for(int i = 0; i < this.intnums.size(); i++){
             answer = answer + this.intnums.get(i);
@@ -52,10 +56,6 @@ public class AFloat {
         answer = answer + '.';
         for(int j = 0; j < this.decimals.size(); j++){
             answer = answer + this.decimals.get(j);
-        }
-
-        if(this.isPositive = false){
-            answer = '-' + answer;
         }
 
         return answer;
@@ -343,4 +343,26 @@ public class AFloat {
 
     }
 
+
+    public static void main(String[] args){
+        Scanner input = new Scanner(System.in);
+
+        String Num1 = input.nextLine();
+        String Num2 = input.nextLine();
+        input.close();
+
+        AFloat num_1 = new AFloat(Num1);
+        AFloat num_2 = new AFloat(Num2);
+
+        AFloat sum = num_1.add(num_2);
+        AFloat diff = num_1.sub(num_2);
+        AFloat prod = num_1.mult(num_2);
+        AFloat quot = num_1.divi(num_2);
+       
+
+        System.out.println("Sum:" + sum.toString());
+        System.out.println("Diff:" + diff.toString());
+        System.out.println("Prod:"+ prod.toString());
+        System.out.println("quot:" + quot.toString());
+        }
 }
