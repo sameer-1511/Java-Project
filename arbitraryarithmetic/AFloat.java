@@ -17,7 +17,7 @@ public class AFloat {
     public AFloat(String s){
         this.intnums = new ArrayList<>();
         this.decimals = new ArrayList<>();
-        s = s.trim();
+        //s = s.trim();
 
         if(s.charAt(0) == '-'){
             this.isPositive = false;
@@ -31,9 +31,14 @@ public class AFloat {
             this.intnums.add(s.charAt(i) - '0');
             i++;
         }
-        s = s.replaceAll("0+$", "");
-        for(int j = this.intnums.size(); j < s.length(); j++){
+        for(int j = i+1; j < s.length(); j++){
             this.decimals.add(s.charAt(j) - '0');
+        }
+
+        int last = this.decimals.size() - 1;
+        while (last >= 0 && this.decimals.get(last) == 0) {
+            this.decimals.remove(last);
+            last--;
         }
     }
 
@@ -44,21 +49,18 @@ public class AFloat {
     }
 
     public String toString(){
-        String answer = "";
+        StringBuilder sb = new StringBuilder();
 
-        //if(this.isPositive == false){
-        //    answer = answer + '-';
-        //}
+        if (!this.isPositive) sb.append('-');
 
-        for(int i = 0; i < this.intnums.size(); i++){
-            answer = answer + this.intnums.get(i);
+        for (int digit : this.intnums) {
+        sb.append(digit);
         }
-        answer = answer + '.';
-        for(int j = 0; j < this.decimals.size(); j++){
-            answer = answer + this.decimals.get(j);
-        }
+        sb.append('.');
 
-        return answer;
+        if (this.decimals.isEmpty()) sb.append('0');
+        else for (int digit : this.decimals) sb.append(digit);
+        return sb.toString();
     }
 
     public int compare_nums(AFloat num){
@@ -125,7 +127,7 @@ public class AFloat {
         AFloat smallint = (this.compare_nums(num) < 0)? this : num;
         AFloat bigint = (this.compare_nums(num) > 0)? this : num;
 
-        AFloat longdec = (this.decimals.size() > num.decimals.size())? this : num;
+        AFloat longdec = (this.decimals.size() >= num.decimals.size())? this : num;
         AFloat shortdec = (this.decimals.size() < num.decimals.size())? this : num;
 
         for(int i = longdec.decimals.size()-1; i >= shortdec.decimals.size(); i--){
@@ -138,7 +140,7 @@ public class AFloat {
             carry = temp/10;
         }
 
-        for(int i = bigint.intnums.size()-1, j = smallint.intnums.size()-1; i >= 0 || j >= 0; i--, j--){
+        for(int i = bigint.intnums.size()-1, j = smallint.intnums.size()-1; i >= 0; i--, j--){
             int sum = (j >= 0)? bigint.intnums.get(i) + smallint.intnums.get(j) + carry : bigint.intnums.get(i) + carry;
             carry = sum/10;
             answer.intnums.add(0, sum%10);
@@ -178,38 +180,34 @@ public class AFloat {
             return answer;
         }
 
-        AFloat longdec = (this.decimals.size() > num.decimals.size())? this : num;
-        AFloat shortdec = (this.decimals.size() < num.decimals.size())? this : num;
+        AFloat big = (this.compare_nums(num) >= 0)? this : num;
+        AFloat small = (this.compare_nums(num) < 0)? this : num;
 
-        for(int i = longdec.decimals.size()-1; i >= shortdec.decimals.size(); i--){
-            answer.decimals.add(0, longdec.decimals.get(i));
-        }
-
-        for(int i = shortdec.decimals.size() - 1; i >= 0; i--){
-            int temp = longdec.decimals.get(i) - shortdec.decimals.get(i) - borrow;
-            borrow = ((longdec.decimals.get(i) - borrow) < shortdec.decimals.get(i))? 1 : 0;
-            int diff = temp + 10*borrow;
+        int maxDec = Math.max(big.decimals.size(), small.decimals.size());
+        for (int i = maxDec - 1; i >= 0; i--) {
+            int a = (i < big.decimals.size()) ? big.decimals.get(i) : 0;
+            int b = (i < small.decimals.size()) ? small.decimals.get(i) : 0;
+            int diff = a - b - borrow;
+            if (diff < 0) {
+                diff += 10;
+                borrow = 1;
+            } else borrow = 0;
             answer.decimals.add(0, diff);
         }
 
-        AFloat smallint = (this.compare_nums(num) < 0)? this : num;
-        AFloat bigint = (this.compare_nums(num) > 0)? this : num;
-
-        for(int i = bigint.intnums.size()-1, j = smallint.intnums.size()-1; i>=0 || j>=0; i--, j--){
-            if(j >= 0){
-                int temp = bigint.intnums.get(i) - smallint.intnums.get(j) - borrow;
-                borrow = ((bigint.intnums.get(i) - borrow) < smallint.intnums.get(j))? 1 : 0;
-                int diff = temp + 10*borrow;
-                answer.intnums.add(0, diff);
-            }else{
-                int diff = bigint.intnums.get(i) - borrow;
-                borrow = 0;
-                if(i != 0 || diff != 0){
-                    answer.intnums.add(0, diff);
-                }
-            }
+        int i = big.intnums.size() - 1;
+        int j = small.intnums.size() - 1;
+        while (i >= 0 || j >= 0) {
+            int a = (i >= 0) ? big.intnums.get(i) : 0;
+            int b = (j >= 0) ? small.intnums.get(j) : 0;
+            int diff = a - b - borrow;
+            if (diff < 0) {
+                diff += 10;
+                borrow = 1;
+            } else borrow = 0;
+            answer.intnums.add(0, diff);
+            i--; j--;
         }
-
         while (answer.intnums.size() > 1 && answer.intnums.get(0) == 0) {
             answer.intnums.remove(0);
         }
@@ -226,78 +224,24 @@ public class AFloat {
         answer.decimals.clear();
         answer.isPositive = true;
 
-        /*for(int i = this.intnums.size()+this.decimals.size()-1; i >= 0; i--){
-            int carry = 0;
-            AFloat prod = new AFloat();
-            prod.isPositive = true;
+        AInteger a = new AInteger();
+        a.digits.addAll(this.intnums);
+        a.digits.addAll(this.decimals);
 
-            for (int k = 0; k < this.intnums.size() + this.decimals.size() - 1 - i; k++) {
-                prod.intnums.add(0); 
-            }
+        AInteger b = new AInteger();
+        b.digits.addAll(num.intnums);
+        b.digits.addAll(num.decimals);
 
-            ArrayList<Integer> dummy = (i < this.intnums.size())? this.intnums : this.decimals;
-            int n = (i < this.intnums.size())? i : i - this.intnums.size();
-
-            for(int a = num.intnums.size()+num.decimals.size()-1, b = num.decimals.size()-1; a >= 0 || b >=0; a--, b-- ){
-                if(b >= 0){
-                    int temp = dummy.get(n)*num.decimals.get(b) + carry;
-                    carry = temp/10;
-                    prod.intnums.add(0, temp%10);
-                }
-                else{
-                    int temp = dummy.get(n)*num.intnums.get(b) + carry;
-                    carry = temp/10;
-                    prod.intnums.add(0, temp%10);
-                }
-            }
-
-            if(carry != 0){
-                prod.intnums.add(0, carry);
-            }
-
-            answer = answer.add(prod);
-        }
-        //answer.decimals = answer.intnums.subList((answer.intnums.size() - this.decimals.size()-num.decimals.size()), (answer.intnums.size()-1));
-        //answer.intnums = answer.intnums.subList(0, (answer.intnums.size()-answer.decimals.size()-1));
+        AInteger prod = new AInteger();
+        prod = a.mult(b);
 
         int decCount = this.decimals.size() + num.decimals.size();
-        int splitPoint = answer.intnums.size() - decCount;
-
+        int splitPoint = prod.digits.size() - decCount;
         if (splitPoint < 0) splitPoint = 0;
-        answer.decimals = new ArrayList<>(answer.intnums.subList(splitPoint, answer.intnums.size()));
-        answer.intnums = new ArrayList<>(answer.intnums.subList(0, splitPoint));
-        */
-        this.intnums.addAll(this.decimals);
-        num.intnums.addAll(num.decimals);
+        answer.intnums = new ArrayList<>(prod.digits.subList(0, splitPoint));
+        answer.decimals = new ArrayList<>(prod.digits.subList(splitPoint, prod.digits.size()));
 
-        for(int i=this.intnums.size()-1; i>=0; i--){
-            int carry = 0;
-            AFloat prod = new AFloat();
-            prod.isPositive = true;
-
-            for (int k = 0; k < this.intnums.size() - 1 - i; k++) {
-                prod.intnums.add(0); 
-            }
-            
-            for(int j=num.intnums.size()-1; j>=0; j--){
-                int temp = this.intnums.get(i) * num.intnums.get(j) + carry;
-                prod.intnums.add(0, temp%10);
-                carry = temp/10;
-            }
-            if(carry != 0){
-                prod.intnums.add(0, carry);
-            }
-
-            answer = answer.add(prod);
-        }
-
-        int decCount = this.decimals.size() + num.decimals.size();
-        int splitPoint = answer.intnums.size() - decCount;
-
-        if (splitPoint < 0) splitPoint = 0;
-        answer.decimals = new ArrayList<>(answer.intnums.subList(splitPoint, answer.intnums.size()));
-        answer.intnums = new ArrayList<>(answer.intnums.subList(0, splitPoint));
-    
+        answer.isPositive = !(this.isPositive ^ num.isPositive);
 
         if((answer.intnums.size() == 1 && answer.intnums.get(0) == 0) && (answer.decimals.size() == 1 && answer.decimals.get(0) == 0)){
             answer.isPositive = true;
@@ -311,36 +255,56 @@ public class AFloat {
         result.intnums.clear(); 
         result.decimals.clear();
 
-        this.intnums.addAll(this.decimals);
-        num.intnums.addAll(num.decimals);
+        ArrayList<Integer> aDigits = new ArrayList<>(this.intnums);
+        aDigits.addAll(this.decimals);
+
+        ArrayList<Integer> bDigits = new ArrayList<>(num.intnums);
+        bDigits.addAll(num.decimals);
 
         AInteger num1 = new AInteger();
-        num1.digits.addAll(this.intnums);
+        num1.digits.addAll(aDigits);
         AInteger num2 = new AInteger();
-        num2.digits.addAll(num.intnums);
+        num2.digits.addAll(bDigits);
 
-        AInteger rem = new AInteger("0");
+        AInteger rem = new AInteger();
         AInteger quo = new AInteger();
         AInteger temp = new AInteger();
         AInteger ten = new AInteger("10");
 
-        while(rem.digits.size() ==1 && rem.digits.get(0) == 0){
-            temp = num1.div(num2);
-            rem = num1.sub((temp.mult(num2)));
-            quo.digits.addAll(temp.digits);
-            num1 = rem.mult(ten);
+        int decprecision = 10;
+
+        for(int i=0; i < decprecision; i++){
+            num1.digits.add(0);
         }
 
-        int totalsize = quo.digits.size();
+        quo = num1.div(num2);
         int deccount = this.decimals.size() - num.decimals.size();
-        if(deccount > 0){
-            result.intnums = new ArrayList<>(quo.digits.subList(totalsize - deccount, totalsize));
-            result.decimals = new ArrayList<>(quo.digits.subList(0, totalsize - deccount));
+        rem = num1.sub(quo.mult(num2));
+
+        for(int i = 0; i < decprecision; i++){
+            rem = rem.mult(ten);
+            temp = rem.div(num2);
+            quo.digits.addAll(temp.digits);
+            rem = rem.sub(temp.mult(num2));
         }
+
+        System.out.println(deccount);
+       
+            int splitIndex = quo.digits.size() - deccount - 2*decprecision;
+            
+            if (splitIndex < 0) splitIndex = 0;
+            result.intnums = new ArrayList<>(quo.digits.subList(0, splitIndex));
+            result.decimals = new ArrayList<>(quo.digits.subList(splitIndex, quo.digits.size()));
+        
+        /*else{
+            result.intnums = new ArrayList<>(quo.digits.subList(0, quo.digits.size()));
+            for(int i = 0; i< deccount; i++){
+                result.intnums.add(0);
+            }
+        }*/
 
         result.isPositive = !(this.isPositive ^ num.isPositive);
         return result;
-
     }
 
 
@@ -364,5 +328,5 @@ public class AFloat {
         System.out.println("Diff:" + diff.toString());
         System.out.println("Prod:"+ prod.toString());
         System.out.println("quot:" + quot.toString());
-        }
+    }
 }

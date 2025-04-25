@@ -1,7 +1,7 @@
 package arbitraryarithmetic;
 
 import java.util.ArrayList;
-import java.util.Scanner;
+//import java.util.Scanner;
 
 public class AInteger {
     public ArrayList<Integer> digits;
@@ -266,25 +266,26 @@ public class AInteger {
         }
     
         AInteger low = new AInteger("0");
-        AInteger dividend = new AInteger(this);
-        dividend.isPositive = true;
+        AInteger high = new AInteger(this);
+        high.isPositive = true;
         AInteger mid, product;
         AInteger result = new AInteger("0");
         AInteger divisor = new AInteger(num);
         divisor.isPositive = true;
     
-        while (low.compare_nums(dividend) == -1) {
-            mid = low.add(dividend).divByTwo(); // You'll need to implement divByTwo
+        while (low.compare_nums(high) <= 0) {
+            mid = low.add(high).divByTwo(); // You'll need to implement divByTwo
             product = mid.mult(divisor);
     
             int cmp = product.compare_nums(this);
             if (cmp == 0) {
-                return mid;
+                result = mid;
+                break;
             } else if (cmp == -1) {
                 result = mid;
                 low = mid.add(new AInteger("1"));
             } else {
-                dividend = mid.sub(new AInteger("1"));
+                high = mid.sub(new AInteger("1"));
             }
         }
     
@@ -296,7 +297,7 @@ public class AInteger {
     }
 
 
-    public static void main(String[] args){
+    /*public static void main(String[] args){
         Scanner input = new Scanner(System.in);
 
         String Num1 = input.nextLine();
@@ -316,7 +317,7 @@ public class AInteger {
         System.out.println("Diff:" + diff.toString());
         System.out.println("Prod:"+ prod.toString());
         System.out.println("quot:" + quot.toString());
-        }
+        }*/
 }
 
 
