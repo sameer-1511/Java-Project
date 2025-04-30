@@ -7,10 +7,12 @@ public class MyInfArith {
     public static void main(String[] args){
         Scanner input = new Scanner(System.in);
 
-        String datatype = input.nextLine().trim();
-        String operation = input.nextLine().trim();
-        String firstnum = input.nextLine().trim();
-        String secondnum = input.nextLine().trim();
+        String[] inputs = input.nextLine().trim().split("\\s+");
+
+        String datatype = inputs[0];
+        String operation = inputs[1];
+        String firstnum = inputs[2];
+        String secondnum = inputs[3];
 
         input.close();
 
