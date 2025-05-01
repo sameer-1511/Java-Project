@@ -1,20 +1,16 @@
-import java.util.Scanner;
+
 
 import arbitraryarithmetic.AFloat;
 import arbitraryarithmetic.AInteger;
 
 public class MyInfArith {
     public static void main(String[] args){
-        Scanner input = new Scanner(System.in);
 
-        String[] inputs = input.nextLine().trim().split("\\s+");
+        String datatype = args[0];
+        String operation = args[1];
+        String firstnum = args[2];
+        String secondnum = args[3];
 
-        String datatype = inputs[0];
-        String operation = inputs[1];
-        String firstnum = inputs[2];
-        String secondnum = inputs[3];
-
-        input.close();
 
         if(datatype.equals("int")){
 
@@ -63,7 +59,7 @@ public class MyInfArith {
                     break;
 
                 case "div":
-                    answer = a.divi(b);
+                    answer = a.div(b);
                     break;
             
                 default:

@@ -1,7 +1,6 @@
 package arbitraryarithmetic;
 
 import java.util.ArrayList;
-//import java.util.Scanner;
 
 public class AInteger {
     public ArrayList<Integer> digits;
@@ -220,46 +219,7 @@ public class AInteger {
 
         return result;
     }
-
-   
-   /*public AInteger div(AInteger num) {
-        AInteger result = new AInteger();
-        result.digits.clear(); 
     
-        if (num.digits.get(0) == 0) {
-            throw new ArithmeticException("Division by zero");
-        }
-    
-        AInteger dividend = new AInteger(this);
-        AInteger divisor = new AInteger(num);
-        AInteger one = new AInteger("1");
-        one.isPositive = true;
-        AInteger quotient = new AInteger("0");
-        quotient.isPositive = true;
-
-        AInteger temp = dividend.compare_nums(divisor);
-        boolean check = false;
-        if(temp == dividend){
-            check = true;
-        }
-
-        while (check) {
-            dividend = dividend.sub(divisor);
-            quotient = quotient.add(one);
-
-            temp = dividend.compare_nums(divisor);
-            if(temp != dividend){
-                check = false;
-            }
-        }
-        
-
-        result.isPositive = (this.isPositive == num.isPositive);
-    
-        return quotient;
-    }
-        */
-
     public AInteger div(AInteger num) {
         if (num.digits.get(0) == 0) {
             throw new ArithmeticException("Division by zero");
@@ -296,28 +256,6 @@ public class AInteger {
         return result;
     }
 
-
-    /*public static void main(String[] args){
-        Scanner input = new Scanner(System.in);
-
-        String Num1 = input.nextLine();
-        String Num2 = input.nextLine();
-        input.close();
-
-        AInteger num_1 = new AInteger(Num1);
-        AInteger num_2 = new AInteger(Num2);
-
-        AInteger sum = num_1.add(num_2);
-        AInteger diff = num_1.sub(num_2);
-        AInteger prod = num_1.mult(num_2);
-        AInteger quot = num_1.div(num_2);
-       
-
-        System.out.println("Sum:" + sum.toString());
-        System.out.println("Diff:" + diff.toString());
-        System.out.println("Prod:"+ prod.toString());
-        System.out.println("quot:" + quot.toString());
-        }*/
 }
 
 

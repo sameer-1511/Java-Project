@@ -23,16 +23,6 @@
         </javac>
     </target>
 
-
-    <target name="run" depends="compile">
-        <java classname="${main.class}" fork="true">
-            <classpath>
-                <pathelement path="${build.dir}"/>
-            </classpath>
-        </java>
-    </target>
-
-
     <target name="jar" depends="compile">
         <jar destfile="MyInfArith.jar" basedir="${build.dir}">
             <manifest>

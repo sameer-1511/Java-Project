@@ -1,26 +1,16 @@
-import subprocess
+
 import sys
+import subprocess
 
-def main():
-    if len(sys.argv) < 5:
-        print("Usage: python run_java.py <type> <operation> <num1> <num2>")
-        return
+compileJava = subprocess.run(["javac","./arbitraryarithmetic/AFloat.java","./arbitraryarithmetic/AInteger.java","./MyInfArith.java"],text=True)
 
-    # Build command: java MyInfArith float add 1.2 3.4
-    command = ["java", "MyInfArith"] + sys.argv[1:]
+if compileJava.returncode==0 :
+    print("Compiled Successfully")
+else:
+    print("Compilation failed")
+    exit(1)
 
-    try:
-        result = subprocess.run(
-            command,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            check=True
-        )
-        print(result.stdout.strip())
-    except subprocess.CalledProcessError as e:
-        print("Java program failed:")
-        print(e.stderr.strip())
 
-if __name__ == "__main__":
-    main()
+if len(sys.argv[1:])!=0:
+    print("Running MyInfArith as arguments were provided")
+    runjava = subprocess.run(["java","MyInfArith"]+sys.argv[1:],text=True)

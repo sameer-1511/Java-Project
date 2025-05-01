@@ -1,7 +1,6 @@
 package arbitraryarithmetic;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class AFloat {
     private ArrayList<Integer> intnums;
@@ -17,7 +16,11 @@ public class AFloat {
     public AFloat(String s){
         this.intnums = new ArrayList<>();
         this.decimals = new ArrayList<>();
-        //s = s.trim();
+
+        s = s.trim();
+        if (s.isEmpty()) {
+            throw new IllegalArgumentException("Input string is empty");
+        }
 
         if(s.charAt(0) == '-'){
             this.isPositive = false;
@@ -27,7 +30,7 @@ public class AFloat {
         }
 
         int i = 0;
-        while(s.charAt(i) != '.'){
+        while(i < s.length() && s.charAt(i) != '.'){
             this.intnums.add(s.charAt(i) - '0');
             i++;
         }
@@ -39,6 +42,9 @@ public class AFloat {
         while (last >= 0 && this.decimals.get(last) == 0) {
             this.decimals.remove(last);
             last--;
+        }
+        if(this.decimals.isEmpty()){
+            this.decimals.add(0);
         }
     }
 
@@ -250,83 +256,54 @@ public class AFloat {
         return answer;
     }
 
-    public AFloat divi(AFloat num){
+    public AFloat div(AFloat num){
         AFloat result = new AFloat();
         result.intnums.clear(); 
         result.decimals.clear();
 
         ArrayList<Integer> aDigits = new ArrayList<>(this.intnums);
-        aDigits.addAll(this.decimals);
+        if(!(this.decimals.size() == 1 && this.decimals.get(0) == 0)){
+            aDigits.addAll(num.decimals);
+        }
 
         ArrayList<Integer> bDigits = new ArrayList<>(num.intnums);
-        bDigits.addAll(num.decimals);
+        if(!(num.decimals.size() == 1 && this.decimals.get(0) == 0)){
+            bDigits.addAll(num.decimals);
+        }
 
         AInteger num1 = new AInteger();
         num1.digits.addAll(aDigits);
         AInteger num2 = new AInteger();
         num2.digits.addAll(bDigits);
 
-        AInteger rem = new AInteger();
+        AInteger zero = new AInteger("0");
+
+        if (num2.compare_nums(zero) == 0) {
+            throw new ArithmeticException("Division by Zero Error");
+        }
+
         AInteger quo = new AInteger();
-        AInteger temp = new AInteger();
-        AInteger ten = new AInteger("10");
 
-        int decprecision = 10;
+        int deccount = this.decimals.size() - num.decimals.size();
 
-        for(int i=0; i < decprecision; i++){
+        for (int i = 0; i < 30; i++) {
             num1.digits.add(0);
         }
-
+    
         quo = num1.div(num2);
-        int deccount = this.decimals.size() - num.decimals.size();
-        rem = num1.sub(quo.mult(num2));
-
-        for(int i = 0; i < decprecision; i++){
-            rem = rem.mult(ten);
-            temp = rem.div(num2);
-            quo.digits.addAll(temp.digits);
-            rem = rem.sub(temp.mult(num2));
+    
+        int intPartLength = quo.digits.size() - 30 - deccount;
+        if (intPartLength < 0) intPartLength = 0;
+    
+        result.intnums = new ArrayList<>(quo.digits.subList(0, intPartLength));
+        result.decimals = new ArrayList<>(quo.digits.subList(intPartLength, quo.digits.size()));
+    
+        if (result.intnums.isEmpty()) {
+            result.intnums.add(0);
         }
-
-        System.out.println(deccount);
-       
-            int splitIndex = quo.digits.size() - deccount - 2*decprecision;
-            
-            if (splitIndex < 0) splitIndex = 0;
-            result.intnums = new ArrayList<>(quo.digits.subList(0, splitIndex));
-            result.decimals = new ArrayList<>(quo.digits.subList(splitIndex, quo.digits.size()));
-        
-        /*else{
-            result.intnums = new ArrayList<>(quo.digits.subList(0, quo.digits.size()));
-            for(int i = 0; i< deccount; i++){
-                result.intnums.add(0);
-            }
-        }*/
 
         result.isPositive = !(this.isPositive ^ num.isPositive);
         return result;
     }
 
-
-    public static void main(String[] args){
-        Scanner input = new Scanner(System.in);
-
-        String Num1 = input.nextLine();
-        String Num2 = input.nextLine();
-        input.close();
-
-        AFloat num_1 = new AFloat(Num1);
-        AFloat num_2 = new AFloat(Num2);
-
-        AFloat sum = num_1.add(num_2);
-        AFloat diff = num_1.sub(num_2);
-        AFloat prod = num_1.mult(num_2);
-        AFloat quot = num_1.divi(num_2);
-       
-
-        System.out.println("Sum:" + sum.toString());
-        System.out.println("Diff:" + diff.toString());
-        System.out.println("Prod:"+ prod.toString());
-        System.out.println("quot:" + quot.toString());
-    }
 }
