@@ -11,6 +11,7 @@ public class AInteger {
         this.isPositive = true;
     }
 
+    //String to AInteger object
     public AInteger(String s) {
         this.digits = new ArrayList<>();
         s = s.trim();
@@ -28,6 +29,7 @@ public class AInteger {
         }
     }
 
+    //Copies an AInteger object into another new AInteger object
     public AInteger(AInteger OtherNum) {
         this.digits = new ArrayList<>(OtherNum.digits);
         this.isPositive  = OtherNum.isPositive;
@@ -38,6 +40,7 @@ public class AInteger {
         return new AInteger(s);
     }
 
+    //Converts the AInteger object to String
     public String toString(){
         String answer = "";
 
@@ -52,6 +55,7 @@ public class AInteger {
         return answer;
     }
 
+    //Compares this AInteger object with another object and returns 1 if 'this' is larger, 0 if both are equal.
     public int compare_nums(AInteger number){
         if(this.digits.size() > number.digits.size()){
             return 1;
@@ -74,6 +78,7 @@ public class AInteger {
         return 0;
     }
 
+    //Divides this AInteger object by 2
     public AInteger divByTwo() {
         AInteger result = new AInteger();
         result.digits.clear();
@@ -94,7 +99,8 @@ public class AInteger {
         return result;
     }
     
-
+    //Performs Addition operation on two AInteger objects
+    //It uses general method of digitwise sum and carry
     public AInteger add(AInteger that){
 
         int carry = 0;
@@ -137,6 +143,8 @@ public class AInteger {
         return result;
     }
 
+    //Performs subtraction operation on two AInteger objects
+    //It uses the general method of digit wise subtraction and borrow
     public AInteger sub(AInteger num){
         int borrow = 0;
         AInteger result = new AInteger();
@@ -186,6 +194,7 @@ public class AInteger {
         return result;
     }
 
+    //Performs Multiplication operation on two AInteger objects
     public AInteger mult(AInteger num){
         AInteger result = new AInteger();
 
@@ -220,32 +229,33 @@ public class AInteger {
         return result;
     }
     
+    //Performs Division operation on two AInteger objects
     public AInteger div(AInteger num) {
         if (num.digits.get(0) == 0) {
             throw new ArithmeticException("Division by zero");
         }
     
-        AInteger low = new AInteger("0");
-        AInteger high = new AInteger(this);
-        high.isPositive = true;
-        AInteger mid, product;
+        AInteger lower_bound = new AInteger("0");
+        AInteger upper_bound = new AInteger(this);
+        upper_bound.isPositive = true;
+        AInteger midpoint, product;
         AInteger result = new AInteger("0");
         AInteger divisor = new AInteger(num);
         divisor.isPositive = true;
     
-        while (low.compare_nums(high) <= 0) {
-            mid = low.add(high).divByTwo(); // You'll need to implement divByTwo
-            product = mid.mult(divisor);
+        while (lower_bound.compare_nums(upper_bound) <= 0) {
+            midpoint = lower_bound.add(upper_bound).divByTwo();
+            product = midpoint.mult(divisor);
     
-            int cmp = product.compare_nums(this);
-            if (cmp == 0) {
-                result = mid;
+            int comparision = product.compare_nums(this);
+            if (comparision == 0) {
+                result = midpoint;
                 break;
-            } else if (cmp == -1) {
-                result = mid;
-                low = mid.add(new AInteger("1"));
+            } else if (comparision == -1) {
+                result = midpoint;
+                lower_bound = midpoint.add(new AInteger("1"));
             } else {
-                high = mid.sub(new AInteger("1"));
+                upper_bound = midpoint.sub(new AInteger("1"));
             }
         }
     

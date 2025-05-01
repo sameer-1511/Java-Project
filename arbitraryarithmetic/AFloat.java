@@ -13,6 +13,7 @@ public class AFloat {
         this.isPositive = true;
     }
 
+    //String to AFloat object
     public AFloat(String s){
         this.intnums = new ArrayList<>();
         this.decimals = new ArrayList<>();
@@ -48,12 +49,14 @@ public class AFloat {
         }
     }
 
+    //Copies an AFloat object into another new AFloat object
     public AFloat(AFloat Othernum){
         this.intnums = new ArrayList<>(Othernum.intnums);
         this.decimals = new ArrayList<>(Othernum.decimals);
         this.isPositive = Othernum.isPositive;
     }
 
+    //Converts the AFloat object back to String
     public String toString(){
         StringBuilder sb = new StringBuilder();
 
@@ -69,6 +72,7 @@ public class AFloat {
         return sb.toString();
     }
 
+    //Compares to AFloat objects, returns 1 if first greater, 0 if equal, -1 if first is smaller
     public int compare_nums(AFloat num){
         if(this.intnums.size() > num.intnums.size()){
             return 1;
@@ -109,6 +113,7 @@ public class AFloat {
         }
     }
 
+    //Adds two AFloat objects using digit-wise addition.
     public AFloat add(AFloat num){
         int carry = 0;
         AFloat answer = new AFloat();
@@ -163,6 +168,7 @@ public class AFloat {
         return answer;
     }
 
+    //Subtracts two AFloat objects using digit-wise subtraction.
     public AFloat sub(AFloat num){
         int borrow = 0;
         AFloat answer = new AFloat();
@@ -224,6 +230,7 @@ public class AFloat {
         return answer;
     }
 
+    //Multiplies two AFLoat objects using methods from AInteger class.
     public AFloat mult(AFloat num){
         AFloat answer = new AFloat();
         answer.intnums.clear();
@@ -256,6 +263,7 @@ public class AFloat {
         return answer;
     }
 
+    //Divides two AFLoat objects using methods from AInteger class.
     public AFloat div(AFloat num){
         AFloat result = new AFloat();
         result.intnums.clear(); 
@@ -263,11 +271,11 @@ public class AFloat {
 
         ArrayList<Integer> aDigits = new ArrayList<>(this.intnums);
         if(!(this.decimals.size() == 1 && this.decimals.get(0) == 0)){
-            aDigits.addAll(num.decimals);
+            aDigits.addAll(this.decimals);
         }
 
         ArrayList<Integer> bDigits = new ArrayList<>(num.intnums);
-        if(!(num.decimals.size() == 1 && this.decimals.get(0) == 0)){
+        if(!(num.decimals.size() == 1 && num.decimals.get(0) == 0)){
             bDigits.addAll(num.decimals);
         }
 
@@ -284,7 +292,17 @@ public class AFloat {
 
         AInteger quo = new AInteger();
 
-        int deccount = this.decimals.size() - num.decimals.size();
+        int deccount = 0;
+
+        if(!(this.decimals.size() == 1 && this.decimals.get(0) == 0) && !(num.decimals.size() == 1 && num.decimals.get(0) == 0)){
+            deccount = this.decimals.size() - num.decimals.size();
+        }else if((this.decimals.size() == 1 && this.decimals.get(0) == 0)){
+            deccount = 0 - num.decimals.size();
+        }else if((num.decimals.size() == 1 && num.decimals.get(0) == 0)){
+            deccount = this.decimals.size();
+        }else{
+            deccount = 0;
+        }
 
         for (int i = 0; i < 30; i++) {
             num1.digits.add(0);
