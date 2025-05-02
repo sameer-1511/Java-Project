@@ -296,9 +296,9 @@ public class AFloat {
 
         if(!(this.decimals.size() == 1 && this.decimals.get(0) == 0) && !(num.decimals.size() == 1 && num.decimals.get(0) == 0)){
             deccount = this.decimals.size() - num.decimals.size();
-        }else if((this.decimals.size() == 1 && this.decimals.get(0) == 0)){
+        }else if((this.decimals.size() == 1 && this.decimals.get(0) == 0) && !(num.decimals.size() == 1 && num.decimals.get(0) == 0)){
             deccount = 0 - num.decimals.size();
-        }else if((num.decimals.size() == 1 && num.decimals.get(0) == 0)){
+        }else if((num.decimals.size() == 1 && num.decimals.get(0) == 0) && !(this.decimals.size() == 1 && this.decimals.get(0) == 0)){
             deccount = this.decimals.size();
         }else{
             deccount = 0;
